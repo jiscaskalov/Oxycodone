@@ -1,0 +1,35 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: jsco <github.flop224@passinbox.com>
+Date: Sat, 3 Aug 2024 23:49:51 -0400
+Subject: [PATCH] Config to disable empty message logging
+
+
+diff --git a/src/main/java/jsco/dev/oxycodone/OxycodoneConfig.java b/src/main/java/jsco/dev/oxycodone/OxycodoneConfig.java
+index dc4f0789821c72503777ac0461b111d566f4db13..5911ada54f9d563aa267258d13a547fcd7f90931 100644
+--- a/src/main/java/jsco/dev/oxycodone/OxycodoneConfig.java
++++ b/src/main/java/jsco/dev/oxycodone/OxycodoneConfig.java
+@@ -319,6 +319,11 @@ public class OxycodoneConfig {
+ 
+     }
+ 
++	public static boolean emptyMessageLogging = false;
++	private static void consoleLogging() {
++		emptyMessageLogging = getBoolean("empty-message-logging", false);
++		setComment("console-logging", "Settings for certain messages that may appear in the console.");
++	}
+ 
+     public static boolean disableMethodProfiler;
+     private static void miscSettings() {
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 1e1742e0fe893fb190dfdb7967da481a0f2e6dd2..ff7c7da5f6c57bd6ce1ac2fb11ea918db4ea6569 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -2437,7 +2437,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+         // CraftBukkit start
+         String s = message.signedContent();
+         if (s.isEmpty()) {
+-            ServerGamePacketListenerImpl.LOGGER.warn(this.player.getScoreboardName() + " tried to send an empty message");
++            if (jsco.dev.oxycodone.OxycodoneConfig.emptyMessageLogging) ServerGamePacketListenerImpl.LOGGER.warn(this.player.getScoreboardName() + " tried to send an empty message"); // Oxycodone
+         } else if (this.getCraftPlayer().isConversing()) {
+             final String conversationInput = s;
+             this.server.processQueue.add(new Runnable() {
