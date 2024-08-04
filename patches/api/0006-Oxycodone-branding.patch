@@ -1,0 +1,204 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: jsco <github.flop224@passinbox.com>
+Date: Sat, 3 Aug 2024 22:38:59 -0400
+Subject: [PATCH] Oxycodone branding
+
+
+diff --git a/src/main/java/gg/pufferfish/pufferfish/sentry/SentryContext.java b/src/main/java/jsco/dev/oxycodone/sentry/SentryContext.java
+similarity index 83%
+rename from src/main/java/gg/pufferfish/pufferfish/sentry/SentryContext.java
+rename to src/main/java/jsco/dev/oxycodone/sentry/SentryContext.java
+index 10310fdd53de28efb8a8250f6d3b0c8eb08fb68a..556ded95305265dea1408c14740a8194cb50a6fd 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/sentry/SentryContext.java
++++ b/src/main/java/jsco/dev/oxycodone/sentry/SentryContext.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.sentry;
++package jsco.dev.oxycodone.sentry;
+ 
+ import com.google.gson.Gson;
+ import java.lang.reflect.Field;
+@@ -21,28 +21,28 @@ public class SentryContext {
+ 	
+ 	public static void setPluginContext(@Nullable Plugin plugin) {
+ 		if (plugin != null) {
+-			ThreadContext.put("pufferfishsentry_pluginname", plugin.getName());
+-			ThreadContext.put("pufferfishsentry_pluginversion", plugin.getDescription().getVersion());
++			ThreadContext.put("oxycodonesentry_pluginname", plugin.getName());
++			ThreadContext.put("oxycodonesentry_pluginversion", plugin.getDescription().getVersion());
+ 		}
+ 	}
+ 	
+ 	public static void removePluginContext() {
+-		ThreadContext.remove("pufferfishsentry_pluginname");
+-		ThreadContext.remove("pufferfishsentry_pluginversion");
++		ThreadContext.remove("oxycodonesentry_pluginname");
++		ThreadContext.remove("oxycodonesentry_pluginversion");
+ 	}
+ 	
+ 	public static void setSenderContext(@Nullable CommandSender sender) {
+ 		if (sender != null) {
+-			ThreadContext.put("pufferfishsentry_playername", sender.getName());
++			ThreadContext.put("oxycodonesentry_playername", sender.getName());
+ 			if (sender instanceof Player player) {
+-				ThreadContext.put("pufferfishsentry_playerid", player.getUniqueId().toString());
++				ThreadContext.put("oxycodonesentry_playerid", player.getUniqueId().toString());
+ 			}
+ 		}
+ 	}
+ 	
+ 	public static void removeSenderContext() {
+-		ThreadContext.remove("pufferfishsentry_playername");
+-		ThreadContext.remove("pufferfishsentry_playerid");
++		ThreadContext.remove("oxycodonesentry_playername");
++		ThreadContext.remove("oxycodonesentry_playerid");
+ 	}
+ 	
+ 	public static void setEventContext(Event event, RegisteredListener registration) {
+@@ -76,13 +76,13 @@ public class SentryContext {
+ 			}
+ 		} catch (Exception e) {} // We can't really safely log exceptions.
+ 		
+-		ThreadContext.put("pufferfishsentry_eventdata", GSON.toJson(serializeFields(event)));
++		ThreadContext.put("oxycodonesentry_eventdata", GSON.toJson(serializeFields(event)));
+ 	}
+ 	
+ 	public static void removeEventContext() {
+ 		removePluginContext();
+ 		removeSenderContext();
+-		ThreadContext.remove("pufferfishsentry_eventdata");
++		ThreadContext.remove("oxycodonesentry_eventdata");
+ 	}
+ 	
+ 	private static Map<String, String> serializeFields(Object object) {
+diff --git a/src/main/java/gg/pufferfish/pufferfish/simd/SIMDChecker.java b/src/main/java/jsco/dev/oxycodone/simd/SIMDChecker.java
+similarity index 97%
+rename from src/main/java/gg/pufferfish/pufferfish/simd/SIMDChecker.java
+rename to src/main/java/jsco/dev/oxycodone/simd/SIMDChecker.java
+index 3441cdad70da1bd523c5933b1a914688718c2657..0a3bb9af1159ca35afdbfecc0520e8899a7b2127 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/simd/SIMDChecker.java
++++ b/src/main/java/jsco/dev/oxycodone/simd/SIMDChecker.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.simd;
++package jsco.dev.oxycodone.simd;
+ 
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/simd/SIMDDetection.java b/src/main/java/jsco/dev/oxycodone/simd/SIMDDetection.java
+similarity index 95%
+rename from src/main/java/gg/pufferfish/pufferfish/simd/SIMDDetection.java
+rename to src/main/java/jsco/dev/oxycodone/simd/SIMDDetection.java
+index a84889d3e9cfc4d7ab5f867820a6484c6070711b..342ce2046b3ccea4610666e0715020823afbac23 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/simd/SIMDDetection.java
++++ b/src/main/java/jsco/dev/oxycodone/simd/SIMDDetection.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.simd;
++package jsco.dev.oxycodone.simd;
+ 
+ import java.util.logging.Logger;
+ 
+diff --git a/src/main/java/gg/pufferfish/pufferfish/simd/VectorMapPalette.java b/src/main/java/jsco/dev/oxycodone/simd/VectorMapPalette.java
+similarity index 98%
+rename from src/main/java/gg/pufferfish/pufferfish/simd/VectorMapPalette.java
+rename to src/main/java/jsco/dev/oxycodone/simd/VectorMapPalette.java
+index ae2464920c9412ac90b819a540ee58be0741465f..b2f892db97724d604cdbd256e8c858ac97885b25 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/simd/VectorMapPalette.java
++++ b/src/main/java/jsco/dev/oxycodone/simd/VectorMapPalette.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.simd;
++package jsco.dev.oxycodone.simd;
+ 
+ import java.awt.Color;
+ import jdk.incubator.vector.FloatVector;
+diff --git a/src/main/java/org/bukkit/map/MapPalette.java b/src/main/java/org/bukkit/map/MapPalette.java
+index e632d51d3487eb4807243b6705999ad124466bf5..8d6954e796f616638bbe5c2f8ef3281ddb9b3e2a 100644
+--- a/src/main/java/org/bukkit/map/MapPalette.java
++++ b/src/main/java/org/bukkit/map/MapPalette.java
+@@ -1,7 +1,7 @@
+ package org.bukkit.map;
+ 
+ import com.google.common.base.Preconditions;
+-import gg.pufferfish.pufferfish.simd.SIMDDetection; // Pufferfish
++import jsco.dev.oxycodone.simd.SIMDDetection; // Pufferfish
+ import java.awt.Color;
+ import java.awt.Graphics2D;
+ import java.awt.Image;
+@@ -218,7 +218,7 @@ public final class MapPalette {
+             result[i] = matchColor(new Color(pixels[i], true));
+         }
+         } else {
+-            gg.pufferfish.pufferfish.simd.VectorMapPalette.matchColorVectorized(pixels, result);
++            jsco.dev.oxycodone.simd.VectorMapPalette.matchColorVectorized(pixels, result);
+         }
+         // Pufferfish end
+         return result;
+diff --git a/src/main/java/org/bukkit/plugin/SimplePluginManager.java b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+index e8ba4f1108f2548a487877027e37d81fc150e042..a535b211af2d813ee326b25d8a1b7d854bbb0b73 100644
+--- a/src/main/java/org/bukkit/plugin/SimplePluginManager.java
++++ b/src/main/java/org/bukkit/plugin/SimplePluginManager.java
+@@ -597,9 +597,9 @@ public final class SimplePluginManager implements PluginManager {
+ 
+     // Paper start
+     private void handlePluginException(String msg, Throwable ex, Plugin plugin) {
+-        gg.pufferfish.pufferfish.sentry.SentryContext.setPluginContext(plugin); // Pufferfish
++        jsco.dev.oxycodone.sentry.SentryContext.setPluginContext(plugin); // Pufferfish
+         server.getLogger().log(Level.SEVERE, msg, ex);
+-        gg.pufferfish.pufferfish.sentry.SentryContext.removePluginContext(); // Pufferfish
++        jsco.dev.oxycodone.sentry.SentryContext.removePluginContext(); // Pufferfish
+         callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerPluginEnableDisableException(msg, ex, plugin)));
+     }
+     // Paper end
+@@ -669,11 +669,11 @@ public final class SimplePluginManager implements PluginManager {
+                             ));
+                 }
+             } catch (Throwable ex) {
+-                gg.pufferfish.pufferfish.sentry.SentryContext.setEventContext(event, registration); // Pufferfish
++                jsco.dev.oxycodone.sentry.SentryContext.setEventContext(event, registration); // Pufferfish
+                 // Paper start - error reporting
+                 String msg = "Could not pass event " + event.getEventName() + " to " + registration.getPlugin().getDescription().getFullName();
+                 server.getLogger().log(Level.SEVERE, msg, ex);
+-                gg.pufferfish.pufferfish.sentry.SentryContext.removeEventContext(); // Pufferfish
++                jsco.dev.oxycodone.sentry.SentryContext.removeEventContext(); // Pufferfish
+                 if (!(event instanceof com.destroystokyo.paper.event.server.ServerExceptionEvent)) { // We don't want to cause an endless event loop
+                     callEvent(new com.destroystokyo.paper.event.server.ServerExceptionEvent(new com.destroystokyo.paper.exception.ServerEventException(msg, ex, registration.getPlugin(), registration.getListener(), event)));
+                 }
+diff --git a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
+index 301e82369603f3dd6e6c1bd380da4bacacd7ef6c..80981217e5414966e6dd9b9247ed8e737fefba80 100644
+--- a/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
++++ b/src/main/java/org/bukkit/plugin/java/JavaPluginLoader.java
+@@ -336,9 +336,9 @@ public final class JavaPluginLoader implements PluginLoader {
+             try {
+                 jPlugin.setEnabled(true);
+             } catch (Throwable ex) {
+-                gg.pufferfish.pufferfish.sentry.SentryContext.setPluginContext(plugin); // Pufferfish
++                jsco.dev.oxycodone.sentry.SentryContext.setPluginContext(plugin); // Pufferfish
+                 server.getLogger().log(Level.SEVERE, "Error occurred while enabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+-                gg.pufferfish.pufferfish.sentry.SentryContext.removePluginContext(); // Pufferfish
++                jsco.dev.oxycodone.sentry.SentryContext.removePluginContext(); // Pufferfish
+                 // Paper start - Disable plugins that fail to load
+                 this.server.getPluginManager().disablePlugin(jPlugin);
+                 return;
+@@ -367,9 +367,9 @@ public final class JavaPluginLoader implements PluginLoader {
+             try {
+                 jPlugin.setEnabled(false);
+             } catch (Throwable ex) {
+-                gg.pufferfish.pufferfish.sentry.SentryContext.setPluginContext(plugin); // Pufferfish
++                jsco.dev.oxycodone.sentry.SentryContext.setPluginContext(plugin); // Pufferfish
+                 server.getLogger().log(Level.SEVERE, "Error occurred while disabling " + plugin.getDescription().getFullName() + " (Is it up to date?)", ex);
+-                gg.pufferfish.pufferfish.sentry.SentryContext.removePluginContext(); // Pufferfish
++                jsco.dev.oxycodone.sentry.SentryContext.removePluginContext(); // Pufferfish
+             }
+ 
+             if (cloader instanceof PluginClassLoader) {
+diff --git a/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java b/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java
+index 12449e18180d604e9cbbc744da74a8b222a18e1f..76f6f67b93aadadda01884a4cb538c82ff092474 100644
+--- a/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java
++++ b/src/main/java/org/bukkit/plugin/java/PluginClassLoader.java
+@@ -199,7 +199,7 @@ public final class PluginClassLoader extends URLClassLoader implements io.paperm
+         throw new ClassNotFoundException(name);
+     }
+ 
+-    public boolean _airplane_hasClass(@NotNull String name) { return this.classes.containsKey(name); } // Pufferfish
++    public boolean _airplane_hasClass(@NotNull String name) { return this.classes.containsKey(name); } // Oxycodone
+     @Override
+     protected Class<?> findClass(String name) throws ClassNotFoundException {
+         if (name.startsWith("org.bukkit.") || name.startsWith("net.minecraft.")) {

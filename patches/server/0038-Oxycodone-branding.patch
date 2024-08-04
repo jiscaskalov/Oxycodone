@@ -1,0 +1,1274 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: jsco <github.flop224@passinbox.com>
+Date: Sat, 3 Aug 2024 22:38:59 -0400
+Subject: [PATCH] Oxycodone branding
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 76bd6a871b64799e2a50e06a16b2fe7619d77b27..d6ae04f1248d52bb7a1465b27f941759b56ef69f 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -13,7 +13,7 @@ configurations.named(log4jPlugins.compileClasspathConfigurationName) {
+ val alsoShade: Configuration by configurations.creating
+ 
+ dependencies {
+-    implementation(project(":pufferfish-api")) // Pufferfish // Paper
++    implementation(project(":oxycodone-api")) // Oxycodone // Paper
+     // Paper start
+     implementation("org.jline:jline-terminal-jansi:3.21.0")
+     implementation("net.minecrell:terminalconsoleappender:1.3.0")
+@@ -96,14 +96,14 @@ tasks.jar {
+         val gitBranch = git("rev-parse", "--abbrev-ref", "HEAD").getText().trim() // Paper
+         attributes(
+             "Main-Class" to "org.bukkit.craftbukkit.Main",
+-            "Implementation-Title" to "Pufferfish", // Pufferfish
++            "Implementation-Title" to "Oxycodone", // Oxycodone
+             "Implementation-Version" to implementationVersion,
+             "Implementation-Vendor" to date, // Paper
+-            "Specification-Title" to "Pufferfish", // Pufferfish
++            "Specification-Title" to "Oxycodone", // Oxycodone
+             "Specification-Version" to project.version,
+-            "Specification-Vendor" to "Pufferfish Studios LLC", // Pufferfish
+-            "Brand-Id" to "pufferfish:pufferfish", // Pufferfish
+-            "Brand-Name" to "Pufferfish", // Pufferfish
++            "Specification-Vendor" to "Genesis Team", // Oxycodone
++            "Brand-Id" to "jiscaskalov/oxycodone", // Oxycodone
++            "Brand-Name" to "Oxycodone", // Oxycodone
+             "Build-Number" to (build ?: ""),
+             "Build-Time" to Instant.now().toString(),
+             "Git-Branch" to gitBranch, // Paper
+diff --git a/src/main/java/co/aikar/timings/TimingsExport.java b/src/main/java/co/aikar/timings/TimingsExport.java
+index b35a9f4c5f8960864c402ede8a51fb5ab9c4fcc0..90d5dd44d0e8e86495b230741037512414a37923 100644
+--- a/src/main/java/co/aikar/timings/TimingsExport.java
++++ b/src/main/java/co/aikar/timings/TimingsExport.java
+@@ -241,7 +241,7 @@ public class TimingsExport extends Thread {
+             pair("spigot", mapAsJSON(Bukkit.spigot().getSpigotConfig(), null)),
+             pair("bukkit", mapAsJSON(Bukkit.spigot().getBukkitConfig(), null)),
+             pair("paper", mapAsJSON(Bukkit.spigot().getPaperConfig(), null)), // Pufferfish
+-            pair("pufferfish", mapAsJSON(gg.pufferfish.pufferfish.PufferfishConfig.getConfigCopy(), null)) // Pufferfish
++            pair("pufferfish", mapAsJSON(jsco.dev.oxycodone.OxycodoneConfig.getConfigCopy(), null)) // Pufferfish
+         ));
+ 
+         new TimingsExport(listeners, parent, history).start();
+diff --git a/src/main/java/com/destroystokyo/paper/Metrics.java b/src/main/java/com/destroystokyo/paper/Metrics.java
+index 692c962193cf9fcc6801fc93f3220bdc673d527b..26c5c76d869e457c06431d93fd91f515119f6a2d 100644
+--- a/src/main/java/com/destroystokyo/paper/Metrics.java
++++ b/src/main/java/com/destroystokyo/paper/Metrics.java
+@@ -593,7 +593,7 @@ public class Metrics {
+             boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
+             // Only start Metrics, if it's enabled in the config
+             if (config.getBoolean("enabled", true)) {
+-                Metrics metrics = new Metrics("Pufferfish", serverUUID, logFailedRequests, Bukkit.getLogger()); // Pufferfish
++                Metrics metrics = new Metrics("Oxycodone", serverUUID, logFailedRequests, Bukkit.getLogger()); // Oxycodone
+ 
+                 metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
+                     String minecraftVersion = Bukkit.getVersion();
+@@ -607,11 +607,11 @@ public class Metrics {
+                 final String implVersion = org.bukkit.craftbukkit.Main.class.getPackage().getImplementationVersion();
+                 if (implVersion != null) {
+                     final String buildOrHash = implVersion.substring(implVersion.lastIndexOf('-') + 1);
+-                    paperVersion = "git-Pufferfish-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Pufferfish
++                    paperVersion = "git-Oxycodone-%s-%s".formatted(Bukkit.getServer().getMinecraftVersion(), buildOrHash); // Oxycodone
+                 } else {
+                     paperVersion = "unknown";
+                 }
+-                metrics.addCustomChart(new Metrics.SimplePie("pufferfish_version", () -> paperVersion)); // Pufferfish
++                metrics.addCustomChart(new Metrics.SimplePie("oxycodone_version", () -> paperVersion)); // Oxycodone
+ 
+                 metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+                     Map<String, Map<String, Integer>> map = new HashMap<>();
+diff --git a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+index 532306cacd52579cdf37e4aca25887b1ed3ba6a1..816deb5b01384f94d2c61c33575a7494726662a8 100644
+--- a/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
++++ b/src/main/java/com/destroystokyo/paper/PaperVersionFetcher.java
+@@ -35,7 +35,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+     private static final Logger LOGGER = LogUtils.getClassLogger();
+     private static final int DISTANCE_ERROR = -1;
+     private static final int DISTANCE_UNKNOWN = -2;
+-    private static final String DOWNLOAD_PAGE = "https://papermc.io/downloads/paper";
++    private static final String DOWNLOAD_PAGE = "https://github.com/jiscaskalov/Oxycodone";
+ 
+     @Override
+     public long getCacheTime() {
+@@ -49,7 +49,7 @@ public class PaperVersionFetcher implements VersionFetcher {
+         if (build.buildNumber().isEmpty() && build.gitCommit().isEmpty()) {
+             updateMessage = text("You are running a development version without access to version information", color(0xFF5300));
+         } else {
+-            updateMessage = getUpdateStatusMessage("PaperMC/Paper", build);
++            updateMessage = getUpdateStatusMessage("jiscaskalov/Oxycodone", build);
+         }
+         final @Nullable Component history = this.getHistory();
+ 
+@@ -59,15 +59,10 @@ public class PaperVersionFetcher implements VersionFetcher {
+     private static Component getUpdateStatusMessage(final String repo, final ServerBuildInfo build) {
+         int distance = DISTANCE_ERROR;
+ 
+-        final OptionalInt buildNumber = build.buildNumber();
+-        if (buildNumber.isPresent()) {
+-            distance = fetchDistanceFromSiteApi(build, buildNumber.getAsInt());
+-        } else {
+-            final Optional<String> gitBranch = build.gitBranch();
+-            final Optional<String> gitCommit = build.gitCommit();
+-            if (gitBranch.isPresent() && gitCommit.isPresent()) {
+-                distance = fetchDistanceFromGitHub(repo, gitBranch.get(), gitCommit.get());
+-            }
++        final Optional<String> gitBranch = build.gitBranch();
++        final Optional<String> gitCommit = build.gitCommit();
++        if (gitBranch.isPresent() && gitCommit.isPresent()) {
++            distance = fetchDistanceFromGitHub(repo, gitBranch.get(), gitCommit.get());
+         }
+ 
+         return switch (distance) {
+diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishLogger.java b/src/main/java/gg/pufferfish/pufferfish/PufferfishLogger.java
+deleted file mode 100644
+index 53f2df00c6809618a9ee3d2ea72e85e8052fbcf1..0000000000000000000000000000000000000000
+--- a/src/main/java/gg/pufferfish/pufferfish/PufferfishLogger.java
++++ /dev/null
+@@ -1,16 +0,0 @@
+-package gg.pufferfish.pufferfish;
+-
+-import java.util.logging.Level;
+-import java.util.logging.Logger;
+-import org.bukkit.Bukkit;
+-
+-public class PufferfishLogger extends Logger {
+-    public static final PufferfishLogger LOGGER = new PufferfishLogger();
+-
+-    private PufferfishLogger() {
+-        super("Pufferfish", null);
+-
+-        setParent(Bukkit.getLogger());
+-        setLevel(Level.ALL);
+-    }
+-}
+diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishVersionFetcher.java b/src/main/java/gg/pufferfish/pufferfish/PufferfishVersionFetcher.java
+deleted file mode 100644
+index 41aa14445457abe7bdd3880e8667e465a76a4425..0000000000000000000000000000000000000000
+--- a/src/main/java/gg/pufferfish/pufferfish/PufferfishVersionFetcher.java
++++ /dev/null
+@@ -1,136 +0,0 @@
+-package gg.pufferfish.pufferfish;
+-
+-import static net.kyori.adventure.text.Component.text;
+-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+-import static net.kyori.adventure.text.format.NamedTextColor.RED;
+-
+-import com.destroystokyo.paper.VersionHistoryManager;
+-import com.destroystokyo.paper.util.VersionFetcher;
+-import com.google.gson.Gson;
+-import com.google.gson.JsonObject;
+-import java.io.IOException;
+-import java.net.URI;
+-import java.net.http.HttpClient;
+-import java.net.http.HttpRequest;
+-import java.net.http.HttpResponse;
+-import java.nio.charset.StandardCharsets;
+-import java.util.concurrent.TimeUnit;
+-import java.util.logging.Level;
+-import java.util.logging.Logger;
+-import net.kyori.adventure.text.Component;
+-import net.kyori.adventure.text.JoinConfiguration;
+-import net.kyori.adventure.text.format.NamedTextColor;
+-import net.kyori.adventure.text.format.TextDecoration;
+-import org.bukkit.craftbukkit.CraftServer;
+-import org.jetbrains.annotations.NotNull;
+-import org.jetbrains.annotations.Nullable;
+-
+-public class PufferfishVersionFetcher implements VersionFetcher {
+-	
+-	private static final Logger LOGGER = Logger.getLogger("PufferfishVersionFetcher");
+-	private static final HttpClient client = HttpClient.newHttpClient();
+-	
+-	private static final URI JENKINS_URI = URI.create("https://ci.pufferfish.host/job/Pufferfish-1.21/lastSuccessfulBuild/buildNumber");
+-	private static final String GITHUB_FORMAT = "https://api.github.com/repos/pufferfish-gg/Pufferfish/compare/ver/1.21...%s";
+-	
+-	private static final HttpResponse.BodyHandler<JsonObject> JSON_OBJECT_BODY_HANDLER = responseInfo -> HttpResponse.BodySubscribers
+-			.mapping(
+-					HttpResponse.BodySubscribers.ofString(StandardCharsets.UTF_8),
+-					string -> new Gson().fromJson(string, JsonObject.class)
+-			);
+-	
+-	@Override
+-	public long getCacheTime() {
+-		return TimeUnit.MINUTES.toMillis(30);
+-	}
+-	
+-	@Override
+-	public @NotNull Component getVersionMessage(final @NotNull String serverVersion) {
+-		final String[] parts = CraftServer.class.getPackage().getImplementationVersion().split("-");
+-		@NotNull Component component;
+-		
+-		if (parts.length != 3) {
+-			component = text("Unknown server version.", RED);
+-		} else {
+-			final String versionString = parts[2];
+-			
+-			try {
+-				component = this.fetchJenkinsVersion(Integer.parseInt(versionString));
+-			} catch (NumberFormatException e) {
+-				component = this.fetchGithubVersion(versionString.substring(1, versionString.length() - 1));
+-			}
+-		}
+-		
+-		final @Nullable Component history = this.getHistory();
+-		return history != null ? Component
+-				.join(JoinConfiguration.noSeparators(), component, Component.newline(), this.getHistory()) : component;
+-	}
+-	
+-	private @NotNull Component fetchJenkinsVersion(final int versionNumber) {
+-		final HttpRequest request = HttpRequest.newBuilder(JENKINS_URI).build();
+-		try {
+-			final HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+-			if (response.statusCode() != 200) {
+-				return text("Received invalid status code (" + response.statusCode() + ") from server.", RED);
+-			}
+-			
+-			int latestVersionNumber;
+-			try {
+-				latestVersionNumber = Integer.parseInt(response.body());
+-			} catch (NumberFormatException e) {
+-				LOGGER.log(Level.WARNING, "Received invalid response from Jenkins \"" + response.body() + "\".");
+-				return text("Received invalid response from server.", RED);
+-			}
+-			
+-			final int versionDiff = latestVersionNumber - versionNumber;
+-			return this.getResponseMessage(versionDiff);
+-		} catch (IOException | InterruptedException e) {
+-			LOGGER.log(Level.WARNING, "Failed to look up version from Jenkins", e);
+-			return text("Failed to retrieve version from server.", RED);
+-		}
+-	}
+-	
+-	// Based off code contributed by Techcable <Techcable@outlook.com> in Paper/GH-65
+-	private @NotNull Component fetchGithubVersion(final @NotNull String hash) {
+-		final URI uri = URI.create(String.format(GITHUB_FORMAT, hash));
+-		final HttpRequest request = HttpRequest.newBuilder(uri).build();
+-		try {
+-			final HttpResponse<JsonObject> response = client.send(request, JSON_OBJECT_BODY_HANDLER);
+-			if (response.statusCode() != 200) {
+-				return text("Received invalid status code (" + response.statusCode() + ") from server.", RED);
+-			}
+-			
+-			final JsonObject obj = response.body();
+-			final int versionDiff = obj.get("behind_by").getAsInt();
+-			
+-			return this.getResponseMessage(versionDiff);
+-		} catch (IOException | InterruptedException e) {
+-			LOGGER.log(Level.WARNING, "Failed to look up version from GitHub", e);
+-			return text("Failed to retrieve version from server.", RED);
+-		}
+-	}
+-	
+-	private @NotNull Component getResponseMessage(final int versionDiff) {
+-		return switch (Math.max(-1, Math.min(1, versionDiff))) {
+-			case -1 -> text("You are running an unsupported version of Pufferfish.", RED);
+-			case 0 -> text("You are on the latest version!", GREEN);
+-			default -> text("You are running " + versionDiff + " version" + (versionDiff == 1 ? "" : "s") + " beyond. " +
+-							"Please update your server when possible to maintain stability, security, and receive the latest optimizations.",
+-					RED);
+-		};
+-	}
+-	
+-	private @Nullable Component getHistory() {
+-		final VersionHistoryManager.VersionData data = VersionHistoryManager.INSTANCE.getVersionData();
+-		if (data == null) {
+-			return null;
+-		}
+-		
+-		final String oldVersion = data.getOldVersion();
+-		if (oldVersion == null) {
+-			return null;
+-		}
+-		
+-		return Component.text("Previous version: " + oldVersion, NamedTextColor.GRAY, TextDecoration.ITALIC);
+-	}
+-}
+\ No newline at end of file
+diff --git a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+index 3cac89130035ccca3b62376a20a0a2076c4af679..641e2d2843c7db436605350c5b853e7028160d6b 100644
+--- a/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
++++ b/src/main/java/io/papermc/paper/configuration/GlobalConfiguration.java
+@@ -115,9 +115,9 @@ public class GlobalConfiguration extends ConfigurationPart {
+         private void postProcess() {
+             // Pufferfish start
+             if (enabled && !reallyEnabled) {
+-                Bukkit.getLogger().log(Level.WARNING, "[Pufferfish] To improve performance, timings have been disabled by default");
+-                Bukkit.getLogger().log(Level.WARNING, "[Pufferfish] You can still use timings by using /timings on, but they will not start on server startup unless you set timings.really-enabled to true in paper.yml");
+-                Bukkit.getLogger().log(Level.WARNING, "[Pufferfish] If you would like to disable this message, either set timings.really-enabled to true or timings.enabled to false.");
++                Bukkit.getLogger().log(Level.WARNING, "[Oxycodone] To improve performance, timings have been disabled by default");
++                Bukkit.getLogger().log(Level.WARNING, "[Oxycodone] You can still use timings by using /timings on, but they will not start on server startup unless you set timings.really-enabled to true in paper.yml");
++                Bukkit.getLogger().log(Level.WARNING, "[Oxycodone] If you would like to disable this message, either set timings.really-enabled to true or timings.enabled to false.");
+             }
+             enabled = reallyEnabled;
+             // Pufferfish end
+diff --git a/src/main/java/gg/airplane/structs/FluidDirectionCache.java b/src/main/java/jsco/airplane/structs/FluidDirectionCache.java
+similarity index 99%
+rename from src/main/java/gg/airplane/structs/FluidDirectionCache.java
+rename to src/main/java/jsco/airplane/structs/FluidDirectionCache.java
+index aa8467b9dda1f7707e41f50ac7b3e9d7343723ec..9ee26392968335ae6bca7597ccfedbeefc34355c 100644
+--- a/src/main/java/gg/airplane/structs/FluidDirectionCache.java
++++ b/src/main/java/jsco/airplane/structs/FluidDirectionCache.java
+@@ -1,4 +1,4 @@
+-package gg.airplane.structs;
++package jsco.airplane.structs;
+ 
+ import it.unimi.dsi.fastutil.HashCommon;
+ 
+diff --git a/src/main/java/gg/airplane/structs/Long2FloatAgingCache.java b/src/main/java/jsco/airplane/structs/Long2FloatAgingCache.java
+similarity index 99%
+rename from src/main/java/gg/airplane/structs/Long2FloatAgingCache.java
+rename to src/main/java/jsco/airplane/structs/Long2FloatAgingCache.java
+index a7f297ebb569f7c1f205e967ca485be70013a714..106ddc647805d1ce98514d90754be5e565db3f35 100644
+--- a/src/main/java/gg/airplane/structs/Long2FloatAgingCache.java
++++ b/src/main/java/jsco/airplane/structs/Long2FloatAgingCache.java
+@@ -1,4 +1,4 @@
+-package gg.airplane.structs;
++package jsco.airplane.structs;
+ 
+ import it.unimi.dsi.fastutil.HashCommon;
+ 
+diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishCommand.java b/src/main/java/jsco/dev/oxycodone/OxycodoneCommand.java
+similarity index 74%
+rename from src/main/java/gg/pufferfish/pufferfish/PufferfishCommand.java
+rename to src/main/java/jsco/dev/oxycodone/OxycodoneCommand.java
+index 020368da69b9a492155f6de6297f74732f4ab6ea..74bb35b91863fe18ce716fc9a1f7a6bae3612504 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/PufferfishCommand.java
++++ b/src/main/java/jsco/dev/oxycodone/OxycodoneCommand.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish;
++package jsco.dev.oxycodone;
+ 
+ import java.io.IOException;
+ import java.util.Collections;
+@@ -14,17 +14,17 @@ import org.bukkit.Location;
+ import org.bukkit.command.Command;
+ import org.bukkit.command.CommandSender;
+ 
+-public class PufferfishCommand extends Command {
++public class OxycodoneCommand extends Command {
+ 
+-    public PufferfishCommand() {
+-        super("pufferfish");
+-        this.description = "Pufferfish related commands";
+-        this.usageMessage = "/pufferfish [reload | version]";
+-        this.setPermission("bukkit.command.pufferfish");
++    public OxycodoneCommand() {
++        super("oxycodone");
++        this.description = "Oxycodone related commands";
++        this.usageMessage = "/oxycodone [reload | version]";
++        this.setPermission("bukkit.command.oxycodone");
+     }
+     
+     public static void init() {
+-        MinecraftServer.getServer().server.getCommandMap().register("pufferfish", "Pufferfish", new PufferfishCommand());
++        MinecraftServer.getServer().server.getCommandMap().register("oxycodone", "Oxycodone", new OxycodoneCommand());
+     }
+ 
+     @Override
+@@ -40,7 +40,7 @@ public class PufferfishCommand extends Command {
+     @Override
+     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+         if (!testPermission(sender)) return true;
+-        String prefix = ChatColor.of("#12fff6") + "" + ChatColor.BOLD + "Pufferfish » " + ChatColor.of("#e8f9f9");
++        String prefix = "%s[%s%s%s%s ~]$ ".formatted(ChatColor.GRAY, ChatColor.of(java.awt.Color.decode("#eb285f")), sender.getName(), "@oxycodone", ChatColor.GRAY);
+ 
+         if (args.length != 1) {
+             sender.sendMessage(prefix + "Usage: " + usageMessage);
+@@ -50,7 +50,7 @@ public class PufferfishCommand extends Command {
+         if (args[0].equalsIgnoreCase("reload")) {
+             MinecraftServer console = MinecraftServer.getServer();
+             try {
+-                PufferfishConfig.load();
++                OxycodoneConfig.load();
+             } catch (IOException e) {
+                 sender.sendMessage(Component.text("Failed to reload.", NamedTextColor.RED));
+                 e.printStackTrace();
+@@ -58,7 +58,7 @@ public class PufferfishCommand extends Command {
+             }
+             console.server.reloadCount++;
+ 
+-            Command.broadcastCommandMessage(sender, prefix + "Pufferfish configuration has been reloaded.");
++            Command.broadcastCommandMessage(sender, prefix + "Oxycodone configuration has been reloaded.");
+         } else if (args[0].equalsIgnoreCase("version")) {
+             Command.broadcastCommandMessage(sender, prefix + "This server is running " + Bukkit.getName() + " version " + Bukkit.getVersion() + " (Implementing API version " + Bukkit.getBukkitVersion() + ")");
+         }
+diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java b/src/main/java/jsco/dev/oxycodone/OxycodoneConfig.java
+similarity index 88%
+rename from src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
+rename to src/main/java/jsco/dev/oxycodone/OxycodoneConfig.java
+index 3d918b0adedf6c3054c40b327f03941e75c4b517..dc4f0789821c72503777ac0461b111d566f4db13 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
++++ b/src/main/java/jsco/dev/oxycodone/OxycodoneConfig.java
+@@ -1,6 +1,6 @@
+-package gg.pufferfish.pufferfish;
++package jsco.dev.oxycodone;
+ 
+-import gg.pufferfish.pufferfish.simd.SIMDDetection;
++import jsco.dev.oxycodone.simd.SIMDDetection;
+ import java.io.File;
+ import java.io.IOException;
+ import java.util.Collections;
+@@ -15,7 +15,7 @@ import net.minecraft.world.entity.EntityType;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.Modifier;
+ import java.util.List;
+-import gg.pufferfish.pufferfish.flare.FlareCommand;
++import jsco.dev.oxycodone.flare.FlareCommand;
+ import net.minecraft.server.MinecraftServer;
+ import org.apache.logging.log4j.Level;
+ import org.bukkit.configuration.ConfigurationSection;
+@@ -32,7 +32,7 @@ import java.util.List;
+ import java.net.URI;
+ import java.util.Collections;
+ 
+-public class PufferfishConfig {
++public class OxycodoneConfig {
+ 	
+ 	private static final YamlFile config = new YamlFile();
+ 	private static int updates = 0;
+@@ -58,7 +58,7 @@ public class PufferfishConfig {
+ 	}
+ 	
+ 	public static void load() throws IOException {
+-		File configFile = new File("pufferfish.yml");
++		File configFile = new File("oxycodone.yml");
+ 		
+ 		if (configFile.exists()) {
+ 			try {
+@@ -70,12 +70,9 @@ public class PufferfishConfig {
+ 		
+ 		getString("info.version", "1.0");
+ 		setComment("info",
+-				"Pufferfish Configuration",
+-				"Check out Pufferfish Host for maximum performance server hosting: https://pufferfish.host",
+-				"Join our Discord for support: https://discord.gg/reZw4vQV9H",
+-				"Download new builds at https://ci.pufferfish.host/job/Pufferfish");
++				"Oxycodone Configuration", "A high-security fork of Pufferfish designed for exploit and crash protection.");
+ 		
+-		for (Method method : PufferfishConfig.class.getDeclaredMethods()) {
++		for (Method method : OxycodoneConfig.class.getDeclaredMethods()) {
+ 			if (Modifier.isStatic(method.getModifiers()) && Modifier.isPrivate(method.getModifiers()) && method.getParameterCount() == 0 &&
+ 					method.getReturnType() == Void.TYPE && !method.getName().startsWith("lambda")) {
+ 				method.setAccessible(true);
+@@ -93,21 +90,21 @@ public class PufferfishConfig {
+ 		
+ 		// Attempt to detect vectorization
+ 		try {
+-			SIMDDetection.isEnabled = SIMDDetection.canEnable(PufferfishLogger.LOGGER);
++			SIMDDetection.isEnabled = SIMDDetection.canEnable(OxycodoneLogger.LOGGER);
+ 			SIMDDetection.versionLimited = SIMDDetection.getJavaVersion() < 17 || SIMDDetection.getJavaVersion() > 21;
+ 		} catch (NoClassDefFoundError | Exception ignored) {
+ 			ignored.printStackTrace();
+ 		}
+ 		
+ 		if (SIMDDetection.isEnabled) {
+-			PufferfishLogger.LOGGER.info("SIMD operations detected as functional. Will replace some operations with faster versions.");
++			OxycodoneLogger.LOGGER.info("SIMD operations detected as functional. Will replace some operations with faster versions.");
+ 		} else if (SIMDDetection.versionLimited) {
+-			PufferfishLogger.LOGGER.warning("Will not enable SIMD! These optimizations are only safely supported on Java 17-21.");
++			OxycodoneLogger.LOGGER.warning("Will not enable SIMD! These optimizations are only safely supported on Java 17-21.");
+ 		} else {
+-			PufferfishLogger.LOGGER.warning("SIMD operations are available for your server, but are not configured!");
+-			PufferfishLogger.LOGGER.warning("To enable additional optimizations, add \"--add-modules=jdk.incubator.vector\" to your startup flags, BEFORE the \"-jar\".");
+-			PufferfishLogger.LOGGER.warning("If you have already added this flag, then SIMD operations are not supported on your JVM or CPU.");
+-			PufferfishLogger.LOGGER.warning("Debug: Java: " + System.getProperty("java.version") + ", test run: " + SIMDDetection.testRun);
++			OxycodoneLogger.LOGGER.warning("SIMD operations are available for your server, but are not configured!");
++			OxycodoneLogger.LOGGER.warning("To enable additional optimizations, add \"--add-modules=jdk.incubator.vector\" to your startup flags, BEFORE the \"-jar\".");
++			OxycodoneLogger.LOGGER.warning("If you have already added this flag, then SIMD operations are not supported on your JVM or CPU.");
++			OxycodoneLogger.LOGGER.warning("Debug: Java: " + System.getProperty("java.version") + ", test run: " + SIMDDetection.testRun);
+ 		}
+ 	}
+ 	
+@@ -176,7 +173,7 @@ public class PufferfishConfig {
+ 		
+ 		sentryDsn = sentryEnvironment == null ? sentryConfig : sentryEnvironment;
+ 		if (sentryDsn != null && !sentryDsn.isBlank()) {
+-			gg.pufferfish.pufferfish.sentry.SentryManager.init();
++			jsco.dev.oxycodone.sentry.SentryManager.init();
+ 		}
+ 	}
+ 	
+@@ -311,10 +308,10 @@ public class PufferfishConfig {
+         accessToken = getString("web-services.token", "");
+         // todo lookup token (off-thread) and let users know if their token is valid
+         if (accessToken.length() > 0) {
+-            gg.pufferfish.pufferfish.flare.FlareSetup.init(); // Pufferfish
++            jsco.dev.oxycodone.flare.FlareSetup.init(); // Pufferfish
+             SimpleCommandMap commandMap = MinecraftServer.getServer().server.getCommandMap();
+             if (commandMap.getCommand("flare") == null) {
+-                commandMap.register("flare", "Pufferfish", new FlareCommand());
++                commandMap.register("flare", "Oxycodone", new FlareCommand());
+             }
+         }
+ 
+diff --git a/src/main/java/jsco/dev/oxycodone/OxycodoneLogger.java b/src/main/java/jsco/dev/oxycodone/OxycodoneLogger.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..05d85939fb28192b2ccd6a5814497aef5886dbd1
+--- /dev/null
++++ b/src/main/java/jsco/dev/oxycodone/OxycodoneLogger.java
+@@ -0,0 +1,16 @@
++package jsco.dev.oxycodone;
++
++import java.util.logging.Level;
++import java.util.logging.Logger;
++import org.bukkit.Bukkit;
++
++public class OxycodoneLogger extends Logger {
++    public static final OxycodoneLogger LOGGER = new OxycodoneLogger();
++
++    private OxycodoneLogger() {
++        super("Oxycodone", null);
++
++        setParent(Bukkit.getLogger());
++        setLevel(Level.ALL);
++    }
++}
+diff --git a/src/main/java/gg/pufferfish/pufferfish/compat/ServerConfigurations.java b/src/main/java/jsco/dev/oxycodone/compat/ServerConfigurations.java
+similarity index 97%
+rename from src/main/java/gg/pufferfish/pufferfish/compat/ServerConfigurations.java
+rename to src/main/java/jsco/dev/oxycodone/compat/ServerConfigurations.java
+index 4ad189d52b27560424ddb311d0817a334637dc95..2a588cc3f9ad050266c31ff197783ac8b4bb9970 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/compat/ServerConfigurations.java
++++ b/src/main/java/jsco/dev/oxycodone/compat/ServerConfigurations.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.compat;
++package jsco.dev.oxycodone.compat;
+ 
+ import co.aikar.timings.TimingsManager;
+ import com.google.common.io.Files;
+@@ -24,7 +24,7 @@ public class ServerConfigurations {
+       "bukkit.yml",
+       "spigot.yml",
+       // "paper.yml", // TODO: Figure out what to do with this.
+-      "pufferfish.yml"
++      "oxycodone.yml"
+     };
+ 
+     public static Map<String, String> getCleanCopies() throws IOException {
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/CustomCategories.java b/src/main/java/jsco/dev/oxycodone/flare/CustomCategories.java
+similarity index 87%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/CustomCategories.java
+rename to src/main/java/jsco/dev/oxycodone/flare/CustomCategories.java
+index 401b42e29bccb5251684062f10b2e0f8b091bc95..2056e407153ddfd79929e505931773b47e687667 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/CustomCategories.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/CustomCategories.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.flare;
++package jsco.dev.oxycodone.flare;
+ 
+ import co.technove.flare.live.category.GraphCategory;
+ 
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/FlareCommand.java b/src/main/java/jsco/dev/oxycodone/flare/FlareCommand.java
+similarity index 97%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/FlareCommand.java
+rename to src/main/java/jsco/dev/oxycodone/flare/FlareCommand.java
+index 3785d1512eb650f91d58903672c059e7449598fc..bff4cedc5282e9a1b2cd5a95f3e5e4b6cffb1d72 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/FlareCommand.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/FlareCommand.java
+@@ -1,8 +1,8 @@
+-package gg.pufferfish.pufferfish.flare;
++package jsco.dev.oxycodone.flare;
+ 
+ import co.technove.flare.exceptions.UserReportableException;
+ import co.technove.flare.internal.profiling.ProfileType;
+-import gg.pufferfish.pufferfish.PufferfishConfig;
++import jsco.dev.oxycodone.OxycodoneConfig;
+ import net.kyori.adventure.text.Component;
+ import net.kyori.adventure.text.event.ClickEvent;
+ import net.kyori.adventure.text.format.NamedTextColor;
+@@ -43,7 +43,7 @@ public class FlareCommand extends Command {
+     @Override
+     public boolean execute(@NotNull CommandSender sender, @NotNull String commandLabel, String @NotNull [] args) {
+         if (!testPermission(sender)) return true;
+-        if (PufferfishConfig.accessToken.length() == 0) {
++        if (OxycodoneConfig.accessToken.length() == 0) {
+             Component clickable = Component.text(BASE_URL, HEX, TextDecoration.UNDERLINED).clickEvent(ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, BASE_URL));
+ 
+             sender.sendMessage(PREFIX.append(Component.text("Flare currently requires an access token to use. To learn more, visit ").color(HEX).append(clickable)));
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/FlareSetup.java b/src/main/java/jsco/dev/oxycodone/flare/FlareSetup.java
+similarity index 95%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/FlareSetup.java
+rename to src/main/java/jsco/dev/oxycodone/flare/FlareSetup.java
+index cd22e4dcc8b7b57b10a95ef084637249a98e524f..76a25813dd8ea07d9397361b20e2adf0d4c27b34 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/FlareSetup.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/FlareSetup.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.flare;
++package jsco.dev.oxycodone.flare;
+ 
+ import co.technove.flare.FlareInitializer;
+ import co.technove.flare.internal.profiling.InitializationException;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/PluginLookup.java b/src/main/java/jsco/dev/oxycodone/flare/PluginLookup.java
+similarity index 97%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/PluginLookup.java
+rename to src/main/java/jsco/dev/oxycodone/flare/PluginLookup.java
+index 74aab5eb4b54ffbaf19b8976ffb8ca4a64584006..e8fd7a210df9fbd111a27cb8a2e5b3b7bba69e70 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/PluginLookup.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/PluginLookup.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.flare;
++package jsco.dev.oxycodone.flare;
+ 
+ import com.google.common.cache.Cache;
+ import com.google.common.cache.CacheBuilder;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/ProfilingManager.java b/src/main/java/jsco/dev/oxycodone/flare/ProfilingManager.java
+similarity index 81%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/ProfilingManager.java
+rename to src/main/java/jsco/dev/oxycodone/flare/ProfilingManager.java
+index e3f76eb11a261c3347f0cd89b5da309bc2dc82f9..ebce042afc363bb9008409ed0ac036ab1dca65d7 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/ProfilingManager.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/ProfilingManager.java
+@@ -1,17 +1,17 @@
+-package gg.pufferfish.pufferfish.flare;
++package jsco.dev.oxycodone.flare;
+ 
+ import co.technove.flare.Flare;
+ import co.technove.flare.FlareAuth;
+ import co.technove.flare.FlareBuilder;
+ import co.technove.flare.exceptions.UserReportableException;
+ import co.technove.flare.internal.profiling.ProfileType;
+-import gg.pufferfish.pufferfish.PufferfishConfig;
+-import gg.pufferfish.pufferfish.PufferfishLogger;
+-import gg.pufferfish.pufferfish.compat.ServerConfigurations;
+-import gg.pufferfish.pufferfish.flare.collectors.GCEventCollector;
+-import gg.pufferfish.pufferfish.flare.collectors.StatCollector;
+-import gg.pufferfish.pufferfish.flare.collectors.TPSCollector;
+-import gg.pufferfish.pufferfish.flare.collectors.WorldCountCollector;
++import jsco.dev.oxycodone.OxycodoneConfig;
++import jsco.dev.oxycodone.OxycodoneLogger;
++import jsco.dev.oxycodone.compat.ServerConfigurations;
++import jsco.dev.oxycodone.flare.collectors.GCEventCollector;
++import jsco.dev.oxycodone.flare.collectors.StatCollector;
++import jsco.dev.oxycodone.flare.collectors.TPSCollector;
++import jsco.dev.oxycodone.flare.collectors.WorldCountCollector;
+ import org.bukkit.Bukkit;
+ import org.bukkit.craftbukkit.scheduler.MinecraftInternalPlugin;
+ import org.bukkit.scheduler.BukkitTask;
+@@ -75,7 +75,7 @@ public class ProfilingManager {
+             FlareBuilder builder = new FlareBuilder()
+                     .withProfileType(profileType)
+                     .withMemoryProfiling(true)
+-                    .withAuth(FlareAuth.fromTokenAndUrl(PufferfishConfig.accessToken, PufferfishConfig.profileWebUrl))
++                    .withAuth(FlareAuth.fromTokenAndUrl(OxycodoneConfig.accessToken, OxycodoneConfig.profileWebUrl))
+ 
+                     .withFiles(ServerConfigurations.getCleanCopies())
+                     .withVersion("Primary Version", Bukkit.getVersion())
+@@ -106,19 +106,19 @@ public class ProfilingManager {
+ 
+             currentFlare = builder.build();
+         } catch (IOException e) {
+-            PufferfishLogger.LOGGER.log(Level.WARNING, "Failed to read configuration files:", e);
++            OxycodoneLogger.LOGGER.log(Level.WARNING, "Failed to read configuration files:", e);
+             throw new UserReportableException("Failed to load configuration files, check logs for further details.");
+         }
+ 
+         try {
+             currentFlare.start();
+         } catch (IllegalStateException e) {
+-            PufferfishLogger.LOGGER.log(Level.WARNING, "Error starting Flare:", e);
++            OxycodoneLogger.LOGGER.log(Level.WARNING, "Error starting Flare:", e);
+             throw new UserReportableException("Failed to start Flare, check logs for further details.");
+         }
+ 
+         currentTask = Bukkit.getScheduler().runTaskLater(new MinecraftInternalPlugin(), ProfilingManager::stop, 20 * 60 * 15);
+-        PufferfishLogger.LOGGER.log(Level.INFO, "Flare has been started: " + getProfilingUri());
++        OxycodoneLogger.LOGGER.log(Level.INFO, "Flare has been started: " + getProfilingUri());
+         return true;
+     }
+ 
+@@ -130,18 +130,18 @@ public class ProfilingManager {
+             currentFlare = null;
+             return true;
+         }
+-        PufferfishLogger.LOGGER.log(Level.INFO, "Flare has been stopped: " + getProfilingUri());
++        OxycodoneLogger.LOGGER.log(Level.INFO, "Flare has been stopped: " + getProfilingUri());
+         try {
+             currentFlare.stop();
+         } catch (IllegalStateException e) {
+-            PufferfishLogger.LOGGER.log(Level.WARNING, "Error occurred stopping Flare", e);
++            OxycodoneLogger.LOGGER.log(Level.WARNING, "Error occurred stopping Flare", e);
+         }
+         currentFlare = null;
+ 
+         try {
+             currentTask.cancel();
+         } catch (Throwable t) {
+-            PufferfishLogger.LOGGER.log(Level.WARNING, "Error occurred stopping Flare", t);
++            OxycodoneLogger.LOGGER.log(Level.WARNING, "Error occurred stopping Flare", t);
+         }
+ 
+         currentTask = null;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/GCEventCollector.java b/src/main/java/jsco/dev/oxycodone/flare/collectors/GCEventCollector.java
+similarity index 98%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/collectors/GCEventCollector.java
+rename to src/main/java/jsco/dev/oxycodone/flare/collectors/GCEventCollector.java
+index d426575c669020f369960107da1e2de2f11f082f..470997af13229f6916d28c240c29a01dc266a6e0 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/GCEventCollector.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/collectors/GCEventCollector.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.flare.collectors;
++package jsco.dev.oxycodone.flare.collectors;
+ 
+ import co.technove.flare.Flare;
+ import co.technove.flare.internal.FlareInternal;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/StatCollector.java b/src/main/java/jsco/dev/oxycodone/flare/collectors/StatCollector.java
+similarity index 97%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/collectors/StatCollector.java
+rename to src/main/java/jsco/dev/oxycodone/flare/collectors/StatCollector.java
+index a22c6dbae53667e4c72464fa27153aee30c7946e..8d5302b3d7dfeba7f559ad030e31bbc1d9785fa1 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/StatCollector.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/collectors/StatCollector.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.flare.collectors;
++package jsco.dev.oxycodone.flare.collectors;
+ 
+ import co.technove.flare.live.CollectorData;
+ import co.technove.flare.live.LiveCollector;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/TPSCollector.java b/src/main/java/jsco/dev/oxycodone/flare/collectors/TPSCollector.java
+similarity index 92%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/collectors/TPSCollector.java
+rename to src/main/java/jsco/dev/oxycodone/flare/collectors/TPSCollector.java
+index 40447d00aefb5ffedb8a2ee87155a04088f0649f..5a18e5601446327cea83bd3a3cd3bbbc1dc656cd 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/TPSCollector.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/collectors/TPSCollector.java
+@@ -1,9 +1,9 @@
+-package gg.pufferfish.pufferfish.flare.collectors;
++package jsco.dev.oxycodone.flare.collectors;
+ 
+ import co.technove.flare.live.CollectorData;
+ import co.technove.flare.live.LiveCollector;
+ import co.technove.flare.live.formatter.SuffixFormatter;
+-import gg.pufferfish.pufferfish.flare.CustomCategories;
++import jsco.dev.oxycodone.flare.CustomCategories;
+ import net.minecraft.server.MinecraftServer;
+ import org.bukkit.Bukkit;
+ 
+diff --git a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/WorldCountCollector.java b/src/main/java/jsco/dev/oxycodone/flare/collectors/WorldCountCollector.java
+similarity index 95%
+rename from src/main/java/gg/pufferfish/pufferfish/flare/collectors/WorldCountCollector.java
+rename to src/main/java/jsco/dev/oxycodone/flare/collectors/WorldCountCollector.java
+index 029d840e28d67d26d3c0dd6785e25dbf15f9226c..8309454c8ff91077e49152abb82e995e5d6e11c7 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/flare/collectors/WorldCountCollector.java
++++ b/src/main/java/jsco/dev/oxycodone/flare/collectors/WorldCountCollector.java
+@@ -1,9 +1,9 @@
+-package gg.pufferfish.pufferfish.flare.collectors;
++package jsco.dev.oxycodone.flare.collectors;
+ 
+ import co.technove.flare.live.CollectorData;
+ import co.technove.flare.live.LiveCollector;
+ import co.technove.flare.live.formatter.SuffixFormatter;
+-import gg.pufferfish.pufferfish.flare.CustomCategories;
++import jsco.dev.oxycodone.flare.CustomCategories;
+ import org.bukkit.Bukkit;
+ import org.bukkit.World;
+ 
+diff --git a/src/main/java/gg/pufferfish/pufferfish/sentry/PufferfishSentryAppender.java b/src/main/java/jsco/dev/oxycodone/sentry/OxycodoneSentryAppender.java
+similarity index 77%
+rename from src/main/java/gg/pufferfish/pufferfish/sentry/PufferfishSentryAppender.java
+rename to src/main/java/jsco/dev/oxycodone/sentry/OxycodoneSentryAppender.java
+index 731ef11c7a025ae95ed8a757b530d834733d0621..88b49e357506370e13737d1709e2855b43453f5d 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/sentry/PufferfishSentryAppender.java
++++ b/src/main/java/jsco/dev/oxycodone/sentry/OxycodoneSentryAppender.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.sentry;
++package jsco.dev.oxycodone.sentry;
+ 
+ import com.google.common.reflect.TypeToken;
+ import com.google.gson.Gson;
+@@ -17,13 +17,13 @@ import org.apache.logging.log4j.core.Logger;
+ import org.apache.logging.log4j.core.appender.AbstractAppender;
+ import org.apache.logging.log4j.core.filter.AbstractFilter;
+ 
+-public class PufferfishSentryAppender extends AbstractAppender {
++public class OxycodoneSentryAppender extends AbstractAppender {
+ 	
+-	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(PufferfishSentryAppender.class);
++	private static final org.apache.logging.log4j.Logger logger = LogManager.getLogger(OxycodoneSentryAppender.class);
+ 	private static final Gson GSON = new Gson();
+ 	
+-	public PufferfishSentryAppender() {
+-		super("PufferfishSentryAdapter", new SentryFilter(), null);
++	public OxycodoneSentryAppender() {
++		super("OxycodoneSentryAdapter", new SentryFilter(), null);
+ 	}
+ 	
+ 	@Override
+@@ -57,21 +57,21 @@ public class PufferfishSentryAppender extends AbstractAppender {
+ 		
+ 		boolean hasContext = e.getContextData() != null;
+ 		
+-		if (hasContext && e.getContextData().containsKey("pufferfishsentry_playerid")) {
++		if (hasContext && e.getContextData().containsKey("oxycodonesentry_playerid")) {
+ 			User user = new User();
+-			user.setId(e.getContextData().getValue("pufferfishsentry_playerid"));
+-			user.setUsername(e.getContextData().getValue("pufferfishsentry_playername"));
++			user.setId(e.getContextData().getValue("oxycodonesentry_playerid"));
++			user.setUsername(e.getContextData().getValue("oxycodonesentry_playername"));
+ 			event.setUser(user);
+ 		}
+ 		
+-		if (hasContext && e.getContextData().containsKey("pufferfishsentry_pluginname")) {
+-			event.setExtra("plugin.name", e.getContextData().getValue("pufferfishsentry_pluginname"));
+-			event.setExtra("plugin.version", e.getContextData().getValue("pufferfishsentry_pluginversion"));
+-			event.setTransaction(e.getContextData().getValue("pufferfishsentry_pluginname"));
++		if (hasContext && e.getContextData().containsKey("oxycodonesentry_pluginname")) {
++			event.setExtra("plugin.name", e.getContextData().getValue("oxycodonesentry_pluginname"));
++			event.setExtra("plugin.version", e.getContextData().getValue("oxycodonesentry_pluginversion"));
++			event.setTransaction(e.getContextData().getValue("oxycodonesentry_pluginname"));
+ 		}
+ 		
+-		if (hasContext && e.getContextData().containsKey("pufferfishsentry_eventdata")) {
+-			Map<String, String> eventFields = GSON.fromJson((String) e.getContextData().getValue("pufferfishsentry_eventdata"), new TypeToken<Map<String, String>>() {}.getType());
++		if (hasContext && e.getContextData().containsKey("oxycodonesentry_eventdata")) {
++			Map<String, String> eventFields = GSON.fromJson((String) e.getContextData().getValue("oxycodonesentry_eventdata"), new TypeToken<Map<String, String>>() {}.getType());
+ 			if (eventFields != null) {
+ 				event.setExtra("event", eventFields);
+ 			}
+diff --git a/src/main/java/gg/pufferfish/pufferfish/sentry/SentryManager.java b/src/main/java/jsco/dev/oxycodone/sentry/SentryManager.java
+similarity index 78%
+rename from src/main/java/gg/pufferfish/pufferfish/sentry/SentryManager.java
+rename to src/main/java/jsco/dev/oxycodone/sentry/SentryManager.java
+index 1b29210ad0bbb4ada150f23357f0c80d331c996d..0748d835739ab53f5adbcac696f444548fd7c581 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/sentry/SentryManager.java
++++ b/src/main/java/jsco/dev/oxycodone/sentry/SentryManager.java
+@@ -1,6 +1,6 @@
+-package gg.pufferfish.pufferfish.sentry;
++package jsco.dev.oxycodone.sentry;
+ 
+-import gg.pufferfish.pufferfish.PufferfishConfig;
++import jsco.dev.oxycodone.OxycodoneConfig;
+ import io.sentry.Sentry;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.Logger;
+@@ -23,11 +23,11 @@ public class SentryManager {
+ 			initialized = true;
+ 			
+ 			Sentry.init(options -> {
+-				options.setDsn(PufferfishConfig.sentryDsn);
++				options.setDsn(OxycodoneConfig.sentryDsn);
+ 				options.setMaxBreadcrumbs(100);
+ 			});
+ 			
+-			PufferfishSentryAppender appender = new PufferfishSentryAppender();
++			OxycodoneSentryAppender appender = new OxycodoneSentryAppender();
+ 			appender.start();
+ 			((org.apache.logging.log4j.core.Logger) LogManager.getRootLogger()).addAppender(appender);
+ 			logger.info("Sentry logging started!");
+diff --git a/src/main/java/gg/pufferfish/pufferfish/util/AsyncExecutor.java b/src/main/java/jsco/dev/oxycodone/util/AsyncExecutor.java
+similarity index 87%
+rename from src/main/java/gg/pufferfish/pufferfish/util/AsyncExecutor.java
+rename to src/main/java/jsco/dev/oxycodone/util/AsyncExecutor.java
+index 8e5323d5d9af25c8a85c4b34a6be76cfc54384cf..6dad1ee5636aa8e3c94fecdca3ac0ea258847410 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/util/AsyncExecutor.java
++++ b/src/main/java/jsco/dev/oxycodone/util/AsyncExecutor.java
+@@ -1,7 +1,7 @@
+-package gg.pufferfish.pufferfish.util;
++package jsco.dev.oxycodone.util;
+ 
+ import com.google.common.collect.Queues;
+-import gg.pufferfish.pufferfish.PufferfishLogger;
++import jsco.dev.oxycodone.OxycodoneLogger;
+ import java.util.Queue;
+ import java.util.concurrent.locks.Condition;
+ import java.util.concurrent.locks.Lock;
+@@ -50,7 +50,7 @@ public class AsyncExecutor implements Runnable {
+ 			} catch (InterruptedException e) {
+ 				Thread.currentThread().interrupt();
+ 			} catch (Exception e) {
+-				PufferfishLogger.LOGGER.log(Level.SEVERE, e, () -> "Failed to execute async job for thread " + thread.getName());
++				OxycodoneLogger.LOGGER.log(Level.SEVERE, e, () -> "Failed to execute async job for thread " + thread.getName());
+ 			}
+ 		}
+ 	}
+diff --git a/src/main/java/gg/pufferfish/pufferfish/util/AsyncPlayerAreaMap.java b/src/main/java/jsco/dev/oxycodone/util/AsyncPlayerAreaMap.java
+similarity index 97%
+rename from src/main/java/gg/pufferfish/pufferfish/util/AsyncPlayerAreaMap.java
+rename to src/main/java/jsco/dev/oxycodone/util/AsyncPlayerAreaMap.java
+index fdcb62d12164024a5f354d60cc863821a18d1b2a..a2565bce7d78f583debd5581fc5a05caf844de5d 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/util/AsyncPlayerAreaMap.java
++++ b/src/main/java/jsco/dev/oxycodone/util/AsyncPlayerAreaMap.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.util;
++package jsco.dev.oxycodone.util;
+ 
+ import com.destroystokyo.paper.util.misc.PlayerAreaMap;
+ import com.destroystokyo.paper.util.misc.PooledLinkedHashSets;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/util/IterableWrapper.java b/src/main/java/jsco/dev/oxycodone/util/IterableWrapper.java
+similarity index 89%
+rename from src/main/java/gg/pufferfish/pufferfish/util/IterableWrapper.java
+rename to src/main/java/jsco/dev/oxycodone/util/IterableWrapper.java
+index c1929840254a3e6d721816f4a20415bea1742580..06dbcef227968c8045ee83dadf99cd5d37d60832 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/util/IterableWrapper.java
++++ b/src/main/java/jsco/dev/oxycodone/util/IterableWrapper.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.util;
++package jsco.dev.oxycodone.util;
+ 
+ import java.util.Iterator;
+ import org.jetbrains.annotations.NotNull;
+diff --git a/src/main/java/gg/pufferfish/pufferfish/util/Long2ObjectOpenHashMapWrapper.java b/src/main/java/jsco/dev/oxycodone/util/Long2ObjectOpenHashMapWrapper.java
+similarity index 95%
+rename from src/main/java/gg/pufferfish/pufferfish/util/Long2ObjectOpenHashMapWrapper.java
+rename to src/main/java/jsco/dev/oxycodone/util/Long2ObjectOpenHashMapWrapper.java
+index facd55463d44cb7e3d2ca6892982f5497b8dded1..777e801e80022b6e597e03ff5e820d652f8ec3ae 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/util/Long2ObjectOpenHashMapWrapper.java
++++ b/src/main/java/jsco/dev/oxycodone/util/Long2ObjectOpenHashMapWrapper.java
+@@ -1,4 +1,4 @@
+-package gg.pufferfish.pufferfish.util;
++package jsco.dev.oxycodone.util;
+ 
+ import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+ import java.util.Map;
+diff --git a/src/main/java/net/minecraft/server/MinecraftServer.java b/src/main/java/net/minecraft/server/MinecraftServer.java
+index 6aca27d477ff3d948fe01d7bfc0774deaea9c846..edf1a743ce7beac32a8dacf7535bb5c168908f0f 100644
+--- a/src/main/java/net/minecraft/server/MinecraftServer.java
++++ b/src/main/java/net/minecraft/server/MinecraftServer.java
+@@ -322,7 +322,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     public volatile Thread shutdownThread; // Paper
+     public volatile boolean abnormalExit = false; // Paper
+-    public gg.pufferfish.pufferfish.util.AsyncExecutor mobSpawnExecutor = new gg.pufferfish.pufferfish.util.AsyncExecutor("MobSpawning"); // Pufferfish - optimize mob spawning
++    public jsco.dev.oxycodone.util.AsyncExecutor mobSpawnExecutor = new jsco.dev.oxycodone.util.AsyncExecutor("MobSpawning"); // Pufferfish - optimize mob spawning
+ 
+     public static <S extends MinecraftServer> S spin(Function<Thread, S> serverFactory) {
+         AtomicReference<S> atomicreference = new AtomicReference();
+@@ -1320,7 +1320,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+                 this.mayHaveDelayedTasks = true;
+                 this.delayedTasksMaxNextTickTimeNanos = Math.max(Util.getNanos() + i, this.nextTickTimeNanos);
+                 // Pufferfish start - tps catchup
+-                if (!gg.pufferfish.pufferfish.PufferfishConfig.tpsCatchup) {
++                if (!jsco.dev.oxycodone.OxycodoneConfig.tpsCatchup) {
+                     this.nextTickTimeNanos = currentTime + i;
+                     this.delayedTasksMaxNextTickTimeNanos = nextTickTimeNanos;
+                 }
+@@ -2574,7 +2574,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+     }
+ 
+     public ProfilerFiller getProfiler() {
+-        if (gg.pufferfish.pufferfish.PufferfishConfig.disableMethodProfiler) return net.minecraft.util.profiling.InactiveProfiler.INSTANCE;
++        if (jsco.dev.oxycodone.OxycodoneConfig.disableMethodProfiler) return net.minecraft.util.profiling.InactiveProfiler.INSTANCE;
+         return this.profiler;
+     }
+ 
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+index cd67df8b88c17167d7068823e9b5f4b801953632..003a31a2d8cde721d315fd5339e6d6147d5f5632 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -237,8 +237,8 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         io.papermc.paper.command.PaperCommands.registerCommands(this); // Paper - setup /paper command
+         com.destroystokyo.paper.Metrics.PaperMetrics.startMetrics(); // Paper - start metrics
+         com.destroystokyo.paper.VersionHistoryManager.INSTANCE.getClass(); // Paper - load version history now
+-        gg.pufferfish.pufferfish.PufferfishConfig.load(); // Pufferfish
+-        gg.pufferfish.pufferfish.PufferfishCommand.init(); // Pufferfish
++        jsco.dev.oxycodone.OxycodoneConfig.load(); // Oxycodone
++        jsco.dev.oxycodone.OxycodoneCommand.init(); // Oxycodone
+ 
+         this.setPvpAllowed(dedicatedserverproperties.pvp);
+         this.setFlightAllowed(dedicatedserverproperties.allowFlight);
+@@ -359,7 +359,7 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+                 DedicatedServer.LOGGER.info("JMX monitoring enabled");
+             }
+ 
+-            if (gg.pufferfish.pufferfish.PufferfishConfig.enableAsyncMobSpawning) mobSpawnExecutor.start(); // Pufferfish
++            if (jsco.dev.oxycodone.OxycodoneConfig.enableAsyncMobSpawning) mobSpawnExecutor.start(); // Oxycodone
+             return true;
+         }
+     }
+diff --git a/src/main/java/net/minecraft/server/level/ChunkMap.java b/src/main/java/net/minecraft/server/level/ChunkMap.java
+index dbbf8a64b44ec15ff77227b3d90a7f2d7f1bc243..06b95dc2b2dbea9ab9c18d4d3a0d55f60c49959d 100644
+--- a/src/main/java/net/minecraft/server/level/ChunkMap.java
++++ b/src/main/java/net/minecraft/server/level/ChunkMap.java
+@@ -199,7 +199,7 @@ public class ChunkMap extends ChunkStorage implements ChunkHolder.PlayerProvider
+     // Paper end
+     // Paper start - optimise chunk tick iteration
+     public final it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet<ChunkHolder> needsChangeBroadcasting = new it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet<>();
+-    public final com.destroystokyo.paper.util.misc.PlayerAreaMap playerMobSpawnMap = new gg.pufferfish.pufferfish.util.AsyncPlayerAreaMap(this.pooledLinkedPlayerHashSets); // Pufferfish
++    public final com.destroystokyo.paper.util.misc.PlayerAreaMap playerMobSpawnMap = new jsco.dev.oxycodone.util.AsyncPlayerAreaMap(this.pooledLinkedPlayerHashSets); // Pufferfish
+     // Paper end - optimise chunk tick iteration
+ 
+     public ChunkMap(ServerLevel world, LevelStorageSource.LevelStorageAccess session, DataFixer dataFixer, StructureTemplateManager structureTemplateManager, Executor executor, BlockableEventLoop<Runnable> mainThreadExecutor, LightChunkGetter chunkProvider, ChunkGenerator chunkGenerator, ChunkProgressListener worldGenerationProgressListener, ChunkStatusUpdateListener chunkStatusChangeListener, Supplier<DimensionDataStorage> persistentStateManagerFactory, int viewDistance, boolean dsync) {
+diff --git a/src/main/java/net/minecraft/server/level/ServerChunkCache.java b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+index 422ae9399af2e7557d32493c44581770b89e9c7f..d290593b5bf5ff3b2a9fa043fe605d829c6affb7 100644
+--- a/src/main/java/net/minecraft/server/level/ServerChunkCache.java
++++ b/src/main/java/net/minecraft/server/level/ServerChunkCache.java
+@@ -447,7 +447,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+                 int naturalSpawnChunkCount = k;
+                 NaturalSpawner.SpawnState spawnercreature_d; // moved down
+                 if ((this.spawnFriendlies || this.spawnEnemies) && this.level.paperConfig().entities.spawning.perPlayerMobSpawns) { // don't count mobs when animals and monsters are disabled
+-                    if (!gg.pufferfish.pufferfish.PufferfishConfig.enableAsyncMobSpawning) { // Pufferfish - moved down when async processing
++                    if (!jsco.dev.oxycodone.OxycodoneConfig.enableAsyncMobSpawning) { // Pufferfish - moved down when async processing
+                     // re-set mob counts
+                     for (ServerPlayer player : this.level.players) {
+                         // Paper start - per player mob spawning backoff
+@@ -498,8 +498,8 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+ 
+                     if (this.level.isNaturalSpawningAllowed(chunkcoordintpair) && this.chunkMap.anyPlayerCloseEnoughForSpawning(chunkcoordintpair)) {
+                         chunk1.incrementInhabitedTime(j);
+-                        if (flag && (this.spawnEnemies || this.spawnFriendlies) && (!gg.pufferfish.pufferfish.PufferfishConfig.enableAsyncMobSpawning || _pufferfish_spawnCountsReady.get()) && this.level.getWorldBorder().isWithinBounds(chunkcoordintpair) && this.chunkMap.anyPlayerCloseEnoughForSpawning(chunkcoordintpair, true)) { // Spigot
+-                            NaturalSpawner.spawnForChunk(this.level, chunk1, lastSpawnState, this.spawnFriendlies, this.spawnEnemies, flag1); // Pufferfish
++                        if (flag && (this.spawnEnemies || this.spawnFriendlies) && (!jsco.dev.oxycodone.OxycodoneConfig.enableAsyncMobSpawning || _pufferfish_spawnCountsReady.get()) && this.level.getWorldBorder().isWithinBounds(chunkcoordintpair) && this.chunkMap.anyPlayerCloseEnoughForSpawning(chunkcoordintpair, true)) { // Spigot
++                            NaturalSpawner.spawnForChunk(this.level, chunk1, lastSpawnState, this.spawnFriendlies, this.spawnEnemies, flag1); // Oxycodone
+                         }
+ 
+                         if (this.level.shouldTickBlocksAt(chunkcoordintpair.toLong())) {
+@@ -533,7 +533,7 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+         }
+     
+         // Pufferfish start - optimize mob spawning
+-        if (gg.pufferfish.pufferfish.PufferfishConfig.enableAsyncMobSpawning) {
++        if (jsco.dev.oxycodone.OxycodoneConfig.enableAsyncMobSpawning) {
+             for (ServerPlayer player : this.level.players) {
+                 // Paper start - per player mob spawning backoff
+                 for (int ii = 0; ii < ServerPlayer.MOBCATEGORY_TOTAL_ENUMS; ii++) {
+@@ -556,8 +556,8 @@ public class ServerChunkCache extends ChunkSource implements ca.spottedleaf.moon
+                     int mapped = distanceManager.getNaturalSpawnChunkCount();
+                     ca.spottedleaf.moonrise.common.list.IteratorSafeOrderedReferenceSet.Iterator<Entity> objectiterator =
+                             level.entityTickList.entities.iterator(io.papermc.paper.util.maplist.IteratorSafeOrderedReferenceSet.ITERATOR_FLAG_SEE_ADDITIONS);
+-                    gg.pufferfish.pufferfish.util.IterableWrapper<Entity> wrappedIterator =
+-                            new gg.pufferfish.pufferfish.util.IterableWrapper<>(objectiterator);
++                    jsco.dev.oxycodone.util.IterableWrapper<Entity> wrappedIterator =
++                            new jsco.dev.oxycodone.util.IterableWrapper<>(objectiterator);
+                     lastSpawnState = NaturalSpawner.createState(mapped, wrappedIterator, this::getFullChunk, null, true);
+                     objectiterator.finishedIterating();
+                     _pufferfish_spawnCountsReady.set(true);
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index 8291fba675bd9c47df5fceeb56d903c76552f106..1e1742e0fe893fb190dfdb7967da481a0f2e6dd2 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -1123,7 +1123,7 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+ 
+     @Override
+     public void handleEditBook(ServerboundEditBookPacket packet) {
+-        if (!gg.pufferfish.pufferfish.PufferfishConfig.enableBooks && !this.player.getBukkitEntity().hasPermission("pufferfish.usebooks")) return; // Pufferfish
++        if (!jsco.dev.oxycodone.OxycodoneConfig.enableBooks && !this.player.getBukkitEntity().hasPermission("pufferfish.usebooks")) return; // Pufferfish
+         // Paper start - Book size limits
+         if (!this.cserver.isPrimaryThread()) {
+             List<String> pageList = packet.pages();
+diff --git a/src/main/java/net/minecraft/world/entity/Entity.java b/src/main/java/net/minecraft/world/entity/Entity.java
+index 30b27ee860fad8b869483110d523ed1d3a88fdd8..d3e11755a6ce28fec240423fb77e3b6513b59c71 100644
+--- a/src/main/java/net/minecraft/world/entity/Entity.java
++++ b/src/main/java/net/minecraft/world/entity/Entity.java
+@@ -431,7 +431,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+     public boolean freezeLocked = false; // Paper - Freeze Tick Lock API
+     public boolean fixedPose = false; // Paper - Expand Pose API
+     public boolean activatedPriorityReset = false; // Pufferfish - DAB
+-    public int activatedPriority = gg.pufferfish.pufferfish.PufferfishConfig.maximumActivationPrio; // Pufferfish - DAB (golf score)
++    public int activatedPriority = jsco.dev.oxycodone.OxycodoneConfig.maximumActivationPrio; // Pufferfish - DAB (golf score)
+     public final BlockPos.MutableBlockPos cachedBlockPos = new BlockPos.MutableBlockPos(); // Pufferfish - reduce entity allocations
+ 
+     public void setOrigin(@javax.annotation.Nonnull Location location) {
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index 8569c433c291a15182577c48b4d486eaddb047af..659c42bc0be92c76540beec5d63c70493ab00fb9 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -1417,7 +1417,7 @@ public abstract class LivingEntity extends Entity implements Attackable {
+     }
+ 
+     public boolean shouldCheckForSuffocation() {
+-        return !gg.pufferfish.pufferfish.PufferfishConfig.enableSuffocationOptimization || (tickCount % 10 == 0 && couldPossiblyBeHurt(1.0F));
++        return !jsco.dev.oxycodone.OxycodoneConfig.enableSuffocationOptimization || (tickCount % 10 == 0 && couldPossiblyBeHurt(1.0F));
+     }
+     // Pufferfish end
+ 
+diff --git a/src/main/java/net/minecraft/world/entity/Mob.java b/src/main/java/net/minecraft/world/entity/Mob.java
+index 73a6611d91020f8b8d39c5183494cfcc9d114b0d..6a43eec4c97a1ab5b05a25328c1b4f994fa68447 100644
+--- a/src/main/java/net/minecraft/world/entity/Mob.java
++++ b/src/main/java/net/minecraft/world/entity/Mob.java
+@@ -237,7 +237,7 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
+     @Override
+     public void inactiveTick() {
+         super.inactiveTick();
+-        boolean isThrottled = gg.pufferfish.pufferfish.PufferfishConfig.throttleInactiveGoalSelectorTick && _pufferfish_inactiveTickDisableCounter++ % 20 != 0; // Pufferfish - throttle inactive goal selector ticking
++        boolean isThrottled = jsco.dev.oxycodone.OxycodoneConfig.throttleInactiveGoalSelectorTick && _pufferfish_inactiveTickDisableCounter++ % 20 != 0; // Pufferfish - throttle inactive goal selector ticking
+         if (this.goalSelector.inactiveTick(this.activatedPriority, true) && !isThrottled) { // Pufferfish - pass activated priroity // Pufferfish - throttle inactive goal selector ticking
+             this.goalSelector.tick();
+         }
+diff --git a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
+index 0329822c1190e3e34ba91a8bc2752c657d487213..6f8076f23f8f224b07500a35e45cb8dd6ecb0d05 100644
+--- a/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
++++ b/src/main/java/net/minecraft/world/entity/ai/goal/GoalSelector.java
+@@ -44,7 +44,7 @@ public class GoalSelector {
+ 
+     // Paper start
+     public boolean inactiveTick(int tickRate, boolean inactive) { // Pufferfish start
+-        if (inactive && !gg.pufferfish.pufferfish.PufferfishConfig.dearEnabled) tickRate = 4; // reset to Paper's
++        if (inactive && !jsco.dev.oxycodone.OxycodoneConfig.dearEnabled) tickRate = 4; // reset to Paper's
+         tickRate = Math.min(tickRate, 3);
+         this.curRate++;
+         return this.curRate % tickRate == 0; // TODO newGoalRate was already unused in 1.20.4, check if this is correct
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
+index 229366a4abc14025d9d43e2f8aa9d28113b566a1..b1b03b2cecc3325b13176f1071d559181e29c4d5 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/Projectile.java
+@@ -69,8 +69,8 @@ public abstract class Projectile extends Entity implements TraceableEntity {
+         if (previousX != newX || previousZ != newZ) {
+             boolean isLoaded = ((net.minecraft.server.level.ServerChunkCache) this.level().getChunkSource()).getChunkAtIfLoadedImmediately(newX, newZ) != null;
+             if (!isLoaded) {
+-                if (Projectile.loadedThisTick > gg.pufferfish.pufferfish.PufferfishConfig.maxProjectileLoadsPerTick) {
+-                    if (++this.loadedLifetime > gg.pufferfish.pufferfish.PufferfishConfig.maxProjectileLoadsPerProjectile) {
++                if (Projectile.loadedThisTick > jsco.dev.oxycodone.OxycodoneConfig.maxProjectileLoadsPerTick) {
++                    if (++this.loadedLifetime > jsco.dev.oxycodone.OxycodoneConfig.maxProjectileLoadsPerProjectile) {
+                         this.discard();
+                     }
+                     return;
+diff --git a/src/main/java/net/minecraft/world/item/EndCrystalItem.java b/src/main/java/net/minecraft/world/item/EndCrystalItem.java
+index cc1e5882bee94864ad189d7f01ce78223411e51d..30ea35112281e3bbaea37fd74fbd48dafcc4311e 100644
+--- a/src/main/java/net/minecraft/world/item/EndCrystalItem.java
++++ b/src/main/java/net/minecraft/world/item/EndCrystalItem.java
+@@ -57,7 +57,7 @@ public class EndCrystalItem extends Item {
+                         world.gameEvent((Entity) context.getPlayer(), (Holder) GameEvent.ENTITY_PLACE, blockposition1);
+                         EndDragonFight enderdragonbattle = ((ServerLevel) world).getDragonFight();
+ 
+-                        if (enderdragonbattle != null && gg.pufferfish.pufferfish.PufferfishConfig.allowEndCrystalRespawn) { // Pufferfish
++                        if (enderdragonbattle != null && jsco.dev.oxycodone.OxycodoneConfig.allowEndCrystalRespawn) { // Pufferfish
+                             enderdragonbattle.tryRespawn(aboveBlockPosition); // Paper - Perf: Do crystal-portal proximity check before entity lookup
+                         }
+                     }
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index 8bc33608ad5603e6c76d27ee22584c299e2700db..12ecce2d2210e883971d641ed14564da7f7d2212 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -1522,7 +1522,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable, ca.spottedl
+     }
+ 
+     public ProfilerFiller getProfiler() {
+-        if (gg.pufferfish.pufferfish.PufferfishConfig.disableMethodProfiler) return net.minecraft.util.profiling.InactiveProfiler.INSTANCE; // Pufferfish
++        if (jsco.dev.oxycodone.OxycodoneConfig.disableMethodProfiler) return net.minecraft.util.profiling.InactiveProfiler.INSTANCE; // Pufferfish
+         return (ProfilerFiller) this.profiler.get();
+     }
+ 
+diff --git a/src/main/java/net/minecraft/world/level/biome/Biome.java b/src/main/java/net/minecraft/world/level/biome/Biome.java
+index f9fbfb63f19decb3b15284306d7edda072e609af..6c8f13fa8edac77525729593dbcc421c3545a5ac 100644
+--- a/src/main/java/net/minecraft/world/level/biome/Biome.java
++++ b/src/main/java/net/minecraft/world/level/biome/Biome.java
+@@ -64,7 +64,7 @@ public final class Biome {
+     private final MobSpawnSettings mobSettings;
+     private final BiomeSpecialEffects specialEffects;
+     // Pufferfish start - use our cache
+-    private final ThreadLocal<gg.airplane.structs.Long2FloatAgingCache> temperatureCache = ThreadLocal.withInitial(() -> Util.make(() -> {
++    private final ThreadLocal<jsco.airplane.structs.Long2FloatAgingCache> temperatureCache = ThreadLocal.withInitial(() -> Util.make(() -> {
+             /*
+             Long2FloatLinkedOpenHashMap long2FloatLinkedOpenHashMap = new Long2FloatLinkedOpenHashMap(1024, 0.25F) {
+                 protected void rehash(int i) {
+@@ -73,7 +73,7 @@ public final class Biome {
+             long2FloatLinkedOpenHashMap.defaultReturnValue(Float.NaN);
+             return long2FloatLinkedOpenHashMap;
+              */
+-            return new gg.airplane.structs.Long2FloatAgingCache(TEMPERATURE_CACHE_SIZE);
++            return new jsco.airplane.structs.Long2FloatAgingCache(TEMPERATURE_CACHE_SIZE);
+             // Pufferfish end
+         }));
+ 
+@@ -118,7 +118,7 @@ public final class Biome {
+     public float getTemperature(BlockPos blockPos) {
+         long l = blockPos.asLong();
+         // Pufferfish start
+-        gg.airplane.structs.Long2FloatAgingCache cache = this.temperatureCache.get();
++        jsco.airplane.structs.Long2FloatAgingCache cache = this.temperatureCache.get();
+         float f = cache.getValue(l);
+         if (!Float.isNaN(f)) {
+             return f;
+diff --git a/src/main/java/net/minecraft/world/level/material/FlowingFluid.java b/src/main/java/net/minecraft/world/level/material/FlowingFluid.java
+index 6785baf574f233ed1c3bea8d406be8a524d9ff82..e54592b541cc783fdf8ddbdbad76b0e0f2845103 100644
+--- a/src/main/java/net/minecraft/world/level/material/FlowingFluid.java
++++ b/src/main/java/net/minecraft/world/level/material/FlowingFluid.java
+@@ -57,10 +57,10 @@ public abstract class FlowingFluid extends Fluid {
+     });
+      */
+ 
+-    private static final ThreadLocal<gg.airplane.structs.FluidDirectionCache<Block.BlockStatePairKey>> localFluidDirectionCache = ThreadLocal.withInitial(() -> {
++    private static final ThreadLocal<jsco.airplane.structs.FluidDirectionCache<Block.BlockStatePairKey>> localFluidDirectionCache = ThreadLocal.withInitial(() -> {
+         // Pufferfish todo - mess with this number for performance
+         //  with 2048 it seems very infrequent on a small world that it has to remove old entries
+-        return new gg.airplane.structs.FluidDirectionCache<>(2048);
++        return new jsco.airplane.structs.FluidDirectionCache<>(2048);
+     });
+     // Pufferfish end
+     private final Map<FluidState, VoxelShape> shapes = Maps.newIdentityHashMap();
+@@ -260,7 +260,7 @@ public abstract class FlowingFluid extends Fluid {
+             object2bytelinkedopenhashmap = null;
+         }
+          */
+-        gg.airplane.structs.FluidDirectionCache<Block.BlockStatePairKey> cache = null;
++        jsco.airplane.structs.FluidDirectionCache<Block.BlockStatePairKey> cache = null;
+ 
+         if (!state.getBlock().hasDynamicShape() && !fromState.getBlock().hasDynamicShape()) {
+             cache = localFluidDirectionCache.get();
+diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
+index 1acc0a579804dee7bb3d0f755c24240413ed7540..b64416b4d1b4a353139e6083e6d4228e00da53e9 100644
+--- a/src/main/java/org/bukkit/craftbukkit/Main.java
++++ b/src/main/java/org/bukkit/craftbukkit/Main.java
+@@ -273,7 +273,7 @@ public class Main {
+                     if (buildDate.before(deadline.getTime())) {
+                         // Paper start - This is some stupid bullshit
+                         System.err.println("*** Warning, you've not updated in a while! ***");
+-                        System.err.println("*** Please download a new build as per instructions from https://papermc.io/downloads/paper ***"); // Paper
++                        System.err.println("*** Please download a new build as per instructions from https://github.com/jiscaskalov/Oxycodone ***"); // Oxycodone
+                         //System.err.println("*** Server will start in 20 seconds ***");
+                         //Thread.sleep(TimeUnit.SECONDS.toMillis(20));
+                         // Paper end
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+index 994153f714a05138a085ced5f04e6ee288a8230e..3137391cadef7c67019561e65fedd0664e689eae 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
+@@ -498,7 +498,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
+ 
+     @Override
+     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
+-        return new gg.pufferfish.pufferfish.PufferfishVersionFetcher(); // Pufferfish
++        return new com.destroystokyo.paper.PaperVersionFetcher();
+     }
+ 
+     @Override
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/ServerShutdownThread.java b/src/main/java/org/bukkit/craftbukkit/util/ServerShutdownThread.java
+index 3dff02fd97f001508e2f81192817bf1b0ef92446..a7a3874533702e55271af76965831e70f7c4a78a 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/ServerShutdownThread.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/ServerShutdownThread.java
+@@ -11,7 +11,7 @@ public class ServerShutdownThread extends Thread {
+ 
+     @Override
+     public void run() {
+-        try { gg.pufferfish.pufferfish.flare.ProfilingManager.stop(); } catch (Throwable t) {} // Pufferfish - shut down Flare if it's running
++        try { jsco.dev.oxycodone.flare.ProfilingManager.stop(); } catch (Throwable t) {} // Pufferfish - shut down Flare if it's running
+         try {
+             // Paper start - try to shutdown on main
+             server.safeShutdown(false, false);
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 80553face9c70c2a3d897681e7761df85b22d464..e77f44ab8b8338ab70d41079cdcc685c30e0b34c 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -11,7 +11,7 @@ public final class Versioning {
+     public static String getBukkitVersion() {
+         String result = "Unknown-Version";
+ 
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/gg.pufferfish.pufferfish/pufferfish-api/pom.properties"); // Pufferfish
++        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/jsco.dev.oxycodone/oxycodone-api/pom.properties"); // Oxycodone
+         Properties properties = new Properties();
+ 
+         if (stream != null) {
+diff --git a/src/main/java/org/spigotmc/ActivationRange.java b/src/main/java/org/spigotmc/ActivationRange.java
+index 1461daa08c5b671b8556f29f90400b7e98285a44..161d844855011a84be820a0bbea61e733fa3665d 100644
+--- a/src/main/java/org/spigotmc/ActivationRange.java
++++ b/src/main/java/org/spigotmc/ActivationRange.java
+@@ -229,17 +229,17 @@ public class ActivationRange
+                 ActivationRange.activateEntity(entity);
+ 
+                 // Pufferfish start
+-                if (gg.pufferfish.pufferfish.PufferfishConfig.dearEnabled && entity.getType().dabEnabled) {
++                if (jsco.dev.oxycodone.OxycodoneConfig.dearEnabled && entity.getType().dabEnabled) {
+                     if (!entity.activatedPriorityReset) {
+                         entity.activatedPriorityReset = true;
+-                        entity.activatedPriority = gg.pufferfish.pufferfish.PufferfishConfig.maximumActivationPrio;
++                        entity.activatedPriority = jsco.dev.oxycodone.OxycodoneConfig.maximumActivationPrio;
+                     }
+                     Vec3 playerVec = player.position();
+                     Vec3 entityVec = entity.position();
+                     double diffX = playerVec.x - entityVec.x, diffY = playerVec.y - entityVec.y, diffZ = playerVec.z - entityVec.z;
+                     int squaredDistance = (int) (diffX * diffX + diffY * diffY + diffZ * diffZ);
+-                    entity.activatedPriority = squaredDistance > gg.pufferfish.pufferfish.PufferfishConfig.startDistanceSquared ?
+-                      Math.max(1, Math.min(squaredDistance >> gg.pufferfish.pufferfish.PufferfishConfig.activationDistanceMod, entity.activatedPriority)) :
++                    entity.activatedPriority = squaredDistance > jsco.dev.oxycodone.OxycodoneConfig.startDistanceSquared ?
++                      Math.max(1, Math.min(squaredDistance >> jsco.dev.oxycodone.OxycodoneConfig.activationDistanceMod, entity.activatedPriority)) :
+                       1;
+                 } else {
+                     entity.activatedPriority = 1;
