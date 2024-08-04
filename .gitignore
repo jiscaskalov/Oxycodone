@@ -1,5 +1,5 @@
-pufferfish-api
-pufferfish-server
+oxycodone-api
+oxycodone-server
 paper-api-generator
 
 build/
@@ -7,3 +7,4 @@ build/
 
 .idea/
 
+run/
